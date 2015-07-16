@@ -1,0 +1,9 @@
+# OS
+.DS_Store
+
+# Build
+/Data-Migrate*
+Data-Migrate.tar.gz
+.build
+/.tidyall.d
+/cover_db
