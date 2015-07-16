@@ -52,7 +52,7 @@ script_sections = NAME | PURPOSE
 [-RegularExpressions::RequireExtendedFormatting]
 [-RegularExpressions::RequireDotMatchAnything]
 [-RegularExpressions::RequireLineBoundaryMatching]
-
+[-RegularExpressions::ProhibitEscapedMetacharacters]
 
 [Variables::ProhibitPunctuationVars]
 # Not allowing @$; use Try::Tiny instead.

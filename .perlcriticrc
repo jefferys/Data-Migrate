@@ -39,18 +39,21 @@ global_variable_exemptions = VERSION
 subroutines = [_a-z][A-Za-z0-9]*
 
 [Documentation::RequirePodSections]
-lib_sections    = NAME | SYNOPSIS | DESCRIPTION | CLASS METHODS | INSTANCE METHODS | INSTALLATION | BUGS AND SUPPORT | DEVELOPMENT & CONTRIBUTION | AUTHOR | COPYRIGHT AND LICENSE
+lib_sections    = NAME | SYNOPSIS | DESCRIPTION | CLASS METHODS | INSTALLATION | BUGS AND SUPPORT | DEVELOPMENT & CONTRIBUTION | AUTHOR | COPYRIGHT AND LICENSE
 
 # Not sophisticated enough to distinguish long but simple RE from short but
-# complex RE, and/or removes flexibility.
+# complex RE, and/or reduce flexibility or readability.
 [-RegularExpressions::ProhibitComplexRegexes]
 [-RegularExpressions::RequireExtendedFormatting]
 [-RegularExpressions::RequireDotMatchAnything]
 [-RegularExpressions::RequireLineBoundaryMatching]
+[-RegularExpressions::ProhibitEscapedMetacharacters]
 
 [Variables::ProhibitPunctuationVars]
-# Not allowing @$; use Try::Tiny instead.
+# Ok that this doesn't allow @$ - should use Try::Tiny instead.
 allow = $!
+
+[ValuesAndExpressions::RequireInterpolationOfMetachars]
 
 #=========================
 # Policy Overrides - Bangs
