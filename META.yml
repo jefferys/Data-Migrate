@@ -1,0 +1,15 @@
+---
+abstract: 'Tools to support data migration on unix systems'
+author:
+  - 'Stuart R. Jefferys <srjefferys@gmail.com>'
+build_requires: {}
+configure_requires:
+  ExtUtils::MakeMaker: '0'
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 5.036, CPAN::Meta::Converter version 2.142060'
+license: apache
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: Data-Migrate
+version: 0.1.0

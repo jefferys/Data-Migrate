@@ -1,0 +1,7 @@
+# .perltidyrc - The configuration file to use with perltidy
+
+--nooutdent-long-lines
+--iterations=2
+--indent-columns=3
+--closing-side-comment-interval=12
+--want-right-space="!"

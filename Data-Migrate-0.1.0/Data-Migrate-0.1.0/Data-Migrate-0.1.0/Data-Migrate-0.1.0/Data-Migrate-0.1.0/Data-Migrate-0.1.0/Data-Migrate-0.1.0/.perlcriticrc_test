@@ -1,0 +1,112 @@
+# .perlcriticrc_test - Config for perlcritic for test files.
+
+#===============
+# Global options
+#===============
+
+# Set default compliance level to 1. Over-ride from CLI to be more forgiving.
+severity = 1
+
+# All themes by default, including add-on themes
+# Perl::Critic::Bangs
+# Perl::Critic::Nits
+# Perl::Critic::Lokku
+# Perl::Critic::Itch
+# Perl::Critic::Pulp
+# Perl::Critic::StricterSubs
+# Perl::Critic::Policy::Perlsecret
+
+theme    =
+
+# top        = 20   # Default
+# statistics = 1    # Default
+
+# Message generated for failures
+verbose    = %f: %m at line %l, column %c. (Severity: %s, Policy: %p)\n
+
+
+#========================
+# Policy Overrides - Core
+#========================
+
+[TestingAndDebugging::RequireUseWarnings]
+severity = 5
+
+[NamingConventions::Capitalization]
+local_lexical_variables = [_a-z][A-Za-z0-9]*
+file_lexical_variables = [_a-z][A-Za-z0-9]*
+scoped_lexical_variables = [_a-z][A-Za-z0-9]*
+global_variables = [_a-z][A-Za-z0-9]*
+subroutines = [_a-z][A-Za-z0-9]*
+
+[Documentation::RequirePodSections]
+script_sections = NAME | PURPOSE
+
+# Test files don't have independent versions, they are versioned as part of
+# the internals of the module. Perhaps that should change, but for now, no.
+[-Modules::RequireVersionVar]
+
+# Not sophisticated enough to distinguish long but simple RE from short but
+# complex RE, and/or removes flexibility.
+[-RegularExpressions::ProhibitComplexRegexes]
+[-RegularExpressions::RequireExtendedFormatting]
+[-RegularExpressions::RequireDotMatchAnything]
+[-RegularExpressions::RequireLineBoundaryMatching]
+[-RegularExpressions::ProhibitEscapedMetacharacters]
+
+[Variables::ProhibitPunctuationVars]
+# Not allowing @$; use Try::Tiny instead.
+allow = $!
+
+#=========================
+# Policy Overrides - Bangs
+#=========================
+
+[-Bangs::ProhibitCommentedOutCode]
+# Dzil turns pod into comments, pod usually contains code...
+
+[Bangs::ProhibitFlagComments]
+# SRJ - May trigger for pod?
+# FIXME: FIXME only removed for testing boilerplate generation.
+# Add back in before release.
+# keywords = XXX TODO FIXME REVIEW
+keywords = XXX TODO REVIEW
+
+[Bangs::ProhibitVagueNames]
+add_names = foo bar
+
+#=========================
+# Policy Overrides - Nits
+#=========================
+
+# Testing by playing with the insides is USEFUL.
+[-ValuesAndExpressions::ProhibitAccessOfPrivateData]
+
+#=========================
+# Policy Overrides - Itch
+#=========================
+
+# N/A
+
+#=========================
+# Policy Overrides - Pulp
+#=========================
+
+# N/A
+
+#================================
+# Policy Overrides - StricterSubs
+#================================
+
+# Just too many false positives from modules that export subs but don't use
+# a standard exproter mechansim. I hate that this doesn't work.
+[-Subroutines::ProhibitCallsToUndeclaredSubs]
+
+
+# No way to configure this to skip anything, and some modules work by
+# making you call fully qualified functions, eg Readonly::Scalar.
+[-Subroutines::ProhibitCallsToUnexportedSubs]
+
+# False positive for fully qualified functions when package was included
+# in a test (use_ok).
+[-Modules::RequireExplicitInclusion]

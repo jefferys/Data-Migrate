@@ -3,10 +3,9 @@ use 5.010;
 use strict;
 use warnings;
 
-
-use Readonly;      # Declare constants
-use Try::Tiny;     # Better than eval for error handling
-use Test::More 'tests' => 1 + 3; # Main testing module, with test count
+use Readonly;     # Declare constants
+use Try::Tiny;    # Better than eval for error handling
+use Test::More 'tests' => 1 + 3;    # Main testing module, with test count
 
 # Test that Data::Migrate loads ok as a module. Will fail if contians syntax
 # errors or if can't find it.
@@ -25,7 +24,6 @@ subtest( 'Data-Migrate.t Helpers'                        => \&testHelpersT );
 subtest( 'Data-Migrate.t Unit Tests (Normal Behavior)'   => \&testOkT );
 subtest( 'Data-Migrate.t Unit tests (Excetion Handling)' => \&testBadT );
 
-
 # Self tests:
 #
 # Test group for self-testing the helper functions in *this* test file.
@@ -35,7 +33,7 @@ subtest( 'Data-Migrate.t Unit tests (Excetion Handling)' => \&testBadT );
 sub testHelpersT {
    plan( tests => 1 );
 
-   subtest( 'provideDefaultObj()'      => \&provideDefaultObjT );
+   subtest( 'provideDefaultObj()' => \&provideDefaultObjT );
    return 1;
 }
 
@@ -46,7 +44,7 @@ sub testHelpersT {
 sub testOkT {
    plan( tests => 1 );
 
-   subtest( 'newOk()'       => \&newOkT );
+   subtest( 'newOk()' => \&newOkT );
    return 1;
 }
 

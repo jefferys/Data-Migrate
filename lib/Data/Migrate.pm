@@ -2,28 +2,28 @@ package Data::Migrate;
 
 # ABSTRACT: Tools to support data migration on unix systems
 
-=head1 SYNOPSIS
+#pod =head1 SYNOPSIS
+#pod
+#pod     use Data::Migrate;
+#pod
+#pod     # Construct a Data::Migrate object instance
+#pod     my $migrator = Data::Migrate->new();
+#pod
+#pod =cut
 
-    use Data::Migrate;
+#pod =head1 DESCRIPTION
+#pod
+#pod Base object for doing data migration. Functions are object methods,
+#pod generally, so they can use data from $self.
+#pod
+#pod =cut
 
-    # Construct a Data::Migrate object instance
-    my $migrator = Data::Migrate->new();
-
-=cut
-
-=head1 DESCRIPTION
-
-Base object for doing data migration. Functions are object methods,
-generally, so they can use data from $self.
-
-=cut
-
-use 5.010;    # Be specific
-use strict;   # Be correct
-use warnings; # Be careful
+use 5.010;       # Be specific
+use strict;      # Be correct
+use warnings;    # Be careful
 
 # Version changes based on semantic versioning, managed externally.
-# VERSION
+our $VERSION = '0.1.0';    # VERSION
 
 # Errors from caller context.
 use Carp;
@@ -42,30 +42,31 @@ $Params::Check::SANITY_CHECK_TEMPLATE = 0;
 # Declare $CLASS to be this class, for use when calling class methods
 Readonly::Scalar my $CLASS => 'Data::Migrate';
 
-=classMethod new()
-
-      my $migrator = Data::Migrate->new();
-
-DESC:
-
-Creates and returns a Data::Migrate object.
-
-PARAM: N/A
-
-RETURNS: $obj
-
-=cut
+#pod =classMethod new()
+#pod
+#pod       my $migrator = Data::Migrate->new();
+#pod
+#pod DESC:
+#pod
+#pod Creates and returns a Data::Migrate object.
+#pod
+#pod PARAM: N/A
+#pod
+#pod RETURNS: $obj
+#pod
+#pod =cut
 
 sub new {
 
    if ( scalar @_ < 1 ) {
       ## no critic (ValuesAndExpressions::RequireInterpolationOfMetachars)
       croak( "$CLASS"
-           . '::new was called incorrectly.'
-           . ' Use ' . $CLASS . '->new().\n' );
+           . '::new was called incorrectly.' . ' Use '
+           . $CLASS
+           . '->new().\n' );
       ## use critic
    }
-   my $class          = shift;
+   my $class = shift;
 
    my $self = {};
    bless $self, $class;
@@ -76,6 +77,40 @@ sub new {
 1;
 
 __END__
+
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+Data::Migrate - Tools to support data migration on unix systems
+
+=head1 SYNOPSIS
+
+    use Data::Migrate;
+
+    # Construct a Data::Migrate object instance
+    my $migrator = Data::Migrate->new();
+
+=head1 DESCRIPTION
+
+Base object for doing data migration. Functions are object methods,
+generally, so they can use data from $self.
+
+=head1 CLASS METHODS
+
+=head2 new()
+
+      my $migrator = Data::Migrate->new();
+
+DESC:
+
+Creates and returns a Data::Migrate object.
+
+PARAM: N/A
+
+RETURNS: $obj
 
 =head1 INSTALLATION
 
@@ -114,8 +149,6 @@ directory, and then executing the normal (C>ExtUtill::MakeMaker>) incantation:
 
 after which you are free to delete both the folder and the zipped file.
 
-=cut
-
 =head1 BUGS AND SUPPORT
 
 No known bugs are present in this release. Unknown bugs are a virtual
@@ -126,8 +159,6 @@ L<https://github.com/Jefferys/Data-Migrate/issues>
 
 Note: you must have a GitHub account to submit issues, but they are free.
 
-=cut
-
 =head1 DEVELOPMENT & CONTRIBUTION
 
 This module is developed and hosted on GitHub, at
@@ -137,5 +168,17 @@ a release branch, with the master branch building using dzil, while the release
 branch uses only the Core perl build system (ExtUtil::MakeMaker).
 
 See "development.md" for more details
+
+=head1 AUTHOR
+
+Stuart R. Jefferys <srjefferys@gmail.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2015 by Stuart R. Jefferys.
+
+This is free software, licensed under:
+
+  The Apache License, Version 2.0, January 2004
 
 =cut

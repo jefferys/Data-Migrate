@@ -1,0 +1,94 @@
+# NAME
+
+Data::Migrate - Tools to support data migration on unix systems
+
+# SYNOPSIS
+
+    use Data::Migrate;
+
+    # Construct a Data::Migrate object instance
+    my $migrator = Data::Migrate->new();
+
+# DESCRIPTION
+
+Base object for doing data migration. Functions are object methods,
+generally, so they can use data from $self.
+
+# CLASS METHODS
+
+## new()
+
+      my $migrator = Data::Migrate->new();
+
+DESC:
+
+Creates and returns a Data::Migrate object.
+
+PARAM: N/A
+
+RETURNS: $obj
+
+# INSTALLATION
+
+## Current Version
+
+You can install the latest release of this module directly from github using
+
+    $ cpanm git://github.com/Jefferys/Data-Migrate.git@release
+
+## Older Versions
+
+Older versions can be downloaded from the archive like:
+
+     $ cpanm git://github.com/Jefferys/Data-Migrate.git@v0.1.0
+
+but replacing the version string after the @ with the release's tag name.
+
+## Manual installation
+
+You can also install manually by selecting and downloading the \*.tar.gz package
+for any release on github, i.e. for
+
+> [https://github.com/Jefferys/Data-Migrate/releases](https://github.com/Jefferys/Data-Migrate/releases)
+
+Installing is then a matter of unzipping this, changing into the unzipped
+directory, and then executing the normal (C>ExtUtill::MakeMaker>) incantation:
+
+     perl Build.PL
+     make
+     make test
+     make install
+
+after which you are free to delete both the folder and the zipped file.
+
+# BUGS AND SUPPORT
+
+No known bugs are present in this release. Unknown bugs are a virtual
+certainty. Please report bugs (and feature requests) though the
+Github issue tracker associated with the development repository, at:
+
+[https://github.com/Jefferys/Data-Migrate/issues](https://github.com/Jefferys/Data-Migrate/issues)
+
+Note: you must have a GitHub account to submit issues, but they are free.
+
+# DEVELOPMENT & CONTRIBUTION
+
+This module is developed and hosted on GitHub, at
+[https://github.com/Jefferys/Data-Migrate](https://github.com/Jefferys/Data-Migrate). Development
+is done using Dist Zilla, but releases to github are made to both a master and
+a release branch, with the master branch building using dzil, while the release
+branch uses only the Core perl build system (ExtUtil::MakeMaker).
+
+See "development.md" for more details
+
+# AUTHOR
+
+Stuart R. Jefferys <srjefferys@gmail.com>
+
+# COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2015 by Stuart R. Jefferys.
+
+This is free software, licensed under:
+
+    The Apache License, Version 2.0, January 2004
