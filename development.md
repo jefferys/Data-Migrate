@@ -1,5 +1,4 @@
-Development and contributions
-=============================
+# Development and contributions
 
 This module is developed and hosted on GitHub, at
 https://github.com/Jefferys/Data-Migrate. Development
