@@ -8,38 +8,50 @@ use Readonly;      # Declare constants
 use Try::Tiny;     # Better than eval for error handling
 use Test::More 'tests' => 1 + 3; # Main testing module, with test count
 
+# Test that Data::Migrate loads ok as a module. Will fail if contians syntax
+# errors or if can't find it.
 BEGIN {
    use_ok('Data::Migrate');
 }
 
+# Constant defining the class to use for static method calls.
 Readonly::Scalar my $CLASS => 'Data::Migrate';
+
+# Group tests into tests for helper functions (functions defined in THIS file,
+# tests for normal execution flows, and tests for error conditions or warnings
+# from normal execution.)
 
 subtest( 'Data-Migrate.t Helpers'                        => \&testHelpersT );
 subtest( 'Data-Migrate.t Unit Tests (Normal Behavior)'   => \&testOkT );
 subtest( 'Data-Migrate.t Unit tests (Excetion Handling)' => \&testBadT );
 
-# Self-testing the helper functions in *this* test file.
+
+# Self tests:
+#
+# Test group for self-testing the helper functions in *this* test file.
 # Done first as errors here hide other errors. There are no sub tests
 # for these as they should be bog-simple functions. More complex helpers should
 # be factored out into separate test utilities
 sub testHelpersT {
-   plan( tests => 2 );
+   plan( tests => 1 );
 
-   subtest( 'provideDefaultParamsHR()' => \&provideDefaultParamsHRT );
    subtest( 'provideDefaultObj()'      => \&provideDefaultObjT );
    return 1;
 }
 
+# Normal execution tests:
+#
 # Unit testing the normal (non-exceptional) behavior of the subs in the
 # associated module.
 sub testOkT {
-   plan( tests => 2 );
+   plan( tests => 1 );
 
    subtest( 'newOk()'       => \&newOkT );
-   subtest( 'fieldNameOk()' => \&fieldNameOkT );
    return 1;
 }
 
+# Exception tests
+#
 # Additional unit testing of subs in the associated module that can throw
 # exceptions.
 sub testBadT {
@@ -53,46 +65,6 @@ sub testBadT {
 # Self-testing.
 #
 
-sub provideDefaultParamsHRT {
-   plan( tests => 7 );
-   my $theHR = provideDefaultParamsHR();
-   {
-      ok( $theHR, 'Default parameter provided.' );
-   }
-   {
-      my $want = 'HASH';
-      my $got  = ref $theHR;
-      is( $got, $want, 'Provided a hash reference' );
-   }
-   {
-      my $want = 'HASH';
-      my $got  = ref $theHR;
-      is( $got, $want, 'Provided a hash reference' );
-   }
-   {
-      # [FIXME] Assumes 'fieldName' is real parameter.
-      ok( exists $theHR->{'fieldName'},
-         'Provides real parameter "fieldName" as a key' );
-   }
-   {
-      ok( exists $theHR->{'ignoreMe'},
-         'Provides unused parameter "ignoreMe" as a key' );
-   }
-   {
-      # [FIXME] Assumes 'fieldName' is real parameter.
-      my $want = 'Some value';
-      my $got  = $theHR->{'fieldName'};
-      is( $got, $want, 'Value of key "fieldName" set correctly.' );
-   }
-   {
-      # [FIXME] Assumes 'fieldName' is real parameter.
-      my $want = { 'k1' => 'v1', 'k2' => 'v2' };
-      my $got = $theHR->{'ignoreMe'};
-      is_deeply( $got, $want, 'Value of key "ignoreMe" set correctly.' );
-   }
-   return 1;
-}
-
 sub provideDefaultObjT {
    plan( tests => 3 );
 
@@ -104,8 +76,10 @@ sub provideDefaultObjT {
       ok( $defaultObj->isa($CLASS),
          "Default testable $CLASS object is correct class" );
    }
+
+   # Accessing internals directly, only for testing - bad use practice
    {
-      my $want = provideDefaultParamsHR();
+      my $want = {};
       my %got  = %{$defaultObj};
       is_deeply( \%got, $want,
          "Default testable $CLASS object has expected content" );
@@ -118,45 +92,25 @@ sub provideDefaultObjT {
 #
 
 sub newOkT {
-   plan( tests => 2 );
+   plan( tests => 1 );
 
    {
-      my $defaultObj = $CLASS->new( { 'fieldName' => 10 } );
+      my $defaultObj = $CLASS->new();
       ok( $defaultObj, 'Object constructor smoke test.' );
-   }
-   {
-      my $paramHR    = provideDefaultParamsHR();
-      my $defaultObj = $CLASS->new($paramHR);
-      my $want       = provideDefaultParamsHR();    # new copy
-      my $got        = $paramHR;                    # after pass
-      is_deeply( $got, $want, 'No change to params by call' );
    }
    return 1;
 }
 
 sub newBadT {
-   plan( tests => 4 );
+   plan( tests => 1 );
 
-   my $fieldNameMissingRE =
-     qr/^Required option \'fieldName\' is not provided for Data::Migrate::new/;
    my $newCalledWrongRE =
-     qr/^Data::Migrate::new was called incorrectly. It is a class method with one param./;
+     qr/^Data::Migrate::new was called incorrectly\. Use Data::Migrate->new\(\)/;
 
    my $noErrorError = 'This should fail.';
    {
       try {
-         Data::Migrate::new( provideDefaultParamsHR() );
-         fail($noErrorError);
-      }
-      catch {
-         my $got  = $_;
-         my $want = $newCalledWrongRE;
-         like( $got, $want, 'Error if not called as object' );
-      };
-   }
-   {
-      try {
-         $CLASS->new();
+         Data::Migrate::new();
          fail($noErrorError);
       }
       catch {
@@ -164,61 +118,6 @@ sub newBadT {
          my $want = $newCalledWrongRE;
          like( $got, $want, 'Error with no param' );
       };
-   }
-   {
-      try {
-         $CLASS->new( {} );
-         fail($noErrorError);
-      }
-      catch {
-         my $got  = $_;
-         my $want = $fieldNameMissingRE;
-         like( $got, $want, 'Error with empty param' );
-      };
-   }
-   {
-      try {
-         $CLASS->new( { ignoredMe => { 'k1' => 'v1', 'k2' => 'v2', }, } );
-         fail($noErrorError);
-      }
-      catch {
-         my $got  = $_;
-         my $want = $fieldNameMissingRE;
-         like( $got, $want, 'Error with missing "fieldName" param' );
-      };
-   }
-   return 1;
-}
-
-sub fieldNameOkT {
-   plan( tests => 4 );
-   {
-      my $defaultObj = provideDefaultObj();
-      my $want       = provideDefaultParamsHR()->{'fieldName'};
-      my $got        = $defaultObj->fieldName();
-      is( $got, $want, 'fieldName as getter returns the correct value.' );
-   }
-   {
-      my $defaultObj = provideDefaultObj();
-      my $want       = provideDefaultParamsHR()->{'fieldName'};
-      my $got        = $defaultObj->fieldName('A New Value');
-      is( $got, $want, 'fieldName as setter returns the correct value.' );
-   }
-   {
-      my $defaultObj = provideDefaultObj();
-      my $newValue   = 'A New Value';
-      $defaultObj->fieldName($newValue);
-      my $want = $newValue;
-      my $got  = $defaultObj->fieldName();
-      is( $got, $want, 'fieldName as setter sets a new value.' );
-   }
-   {
-      my $defaultObj = provideDefaultObj();
-      my $newValue   = 'A New Value';
-      $defaultObj->fieldName($newValue);
-      my $want = 'A New Value';    # New copy of param
-      my $got  = $newValue;        # Param after call
-      is( $got, $want, 'fieldName as setter does not change parameter' );
    }
    return 1;
 }
@@ -228,20 +127,9 @@ sub fieldNameOkT {
 #
 
 # [FIXME] Assumes 'fieldName' is real parameter.
-sub provideDefaultParamsHR {
-   my $ignoredParamHR = {
-      'k1' => 'v1',
-      'k2' => 'v2',
-   };
-   my $initParamHR = {
-      'fieldName' => 'Some value',
-      'ignoreMe'  => $ignoredParamHR,
-   };
-   return $initParamHR;
-}
 
 sub provideDefaultObj {
-   my $defaultObj = $CLASS->new( provideDefaultParamsHR() );
+   my $defaultObj = $CLASS->new();
    return $defaultObj;
 }
 
@@ -253,23 +141,20 @@ t/Data-Migrate.t - Unit tests for Data::Migrate
 
 =head1 PURPOSE
 
-=head2 What code?
+Unit test all the subroutines in the main module and the data providor
+subroutines in this module.
 
-Test the subroutines in the main module.
+=head1 DESCRIPTION
 
-=head2 When?
+Contains unit tests that are organized with one test file matching each code
+file in the main distribuion, and then within each test file tests are
+organized into 4 sub-test testing (1) module loading, (2) helper functions
+within the test file, (3) Normal function operations, and (4) exception handling
 
-At test time. This contains the core unit tests for subroutines in
-the main distriburion.
+=head1 RUN
 
-=head2 Purpose?
-
-Unit test all subroutines in the main module.
-
-=head2 Why?
-
-Unit tests are organized with one test file matching each code file
-in the main distribuion.
+This is intended to be run as part of the test harness. It should be run by
+the developer before commiting any new changes and by the user at install time.
 
 =cut
 
@@ -281,34 +166,6 @@ is done using Dist Zilla, but releases to github are made to both a master and
 a release branch, with the master branch building using dzil, while the release
 branch uses only the Core perl build system (ExtUtil::MakeMaker).
 
-=cut
-
-=head2 Conventions
-
-=cut
-
-=head3 Testing
-
-=over 4
-
-=item filenames
-
-I name all test files ".t". Test files run by users at installation are put in
-the t/ directory of the distibution. Test files to be run only by
-authors or developers go in the xt/ directory of the distribution in the
-development repository. These are not needed by users and are *not* copied into
-the distro.
-
-This is a more rigorous separation of concerns than is usually maintianed with
-perl distributions. With the prevelance of github and similar source
-repositories taking up the load of supporting scm histories, it no longer makes
-sense for cpan to be used as a "development repository without history". It
-still has a critical role as a centralized module source, and still needs
-extensive meta-data provided to describe a distro and where to find the
-development repository. The presence of xt ditectories in install tarballs is
-an un-needed historic artifact. It is unfortunate that build tools such as dzil
-appear unable to do this easily.
-
-=back
+See devlopment.md for more details.
 
 =cut
